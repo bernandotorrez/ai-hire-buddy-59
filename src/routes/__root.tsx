@@ -79,8 +79,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WarmHire — AI-powered job board" },
-      { name: "description", content: "Post jobs, build your profile with AI, and match candidates faster." },
+      { title: "AI Hire Buddy - AI-powered job board" },
+      {
+        name: "description",
+        content: "Post jobs, build profiles with AI, and match candidates faster.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -101,7 +104,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         {children}
         <Scripts />

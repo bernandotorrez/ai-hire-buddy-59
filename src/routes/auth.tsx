@@ -12,7 +12,12 @@ import { toast } from "sonner";
 import { Briefcase, UserSearch } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — WarmHire" }, { name: "description", content: "Sign in or create your WarmHire account." }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in - AI Hire Buddy" },
+      { name: "description", content: "Sign in or create your AI Hire Buddy account." },
+    ],
+  }),
   component: AuthPage,
 });
 
@@ -24,18 +29,18 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [role, setRole] = useState<"job_seeker" | "recruiter">("job_seeker");
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Welcome back!");
+    toast.success("Welcome back");
     navigate({ to: "/jobs" });
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignUp = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -50,12 +55,13 @@ function AuthPage() {
       return toast.error(error.message);
     }
     if (data.user) {
-      // Insert role
-      const { error: roleErr } = await supabase.from("user_roles").insert({ user_id: data.user.id, role });
-      if (roleErr) console.error(roleErr);
+      const { error: roleErr } = await supabase
+        .from("user_roles")
+        .insert({ user_id: data.user.id, role });
+      if (roleErr) toast.error("Account created, but role setup needs to be completed.");
     }
     setLoading(false);
-    toast.success("Account created!");
+    toast.success("Account created");
     navigate({ to: role === "recruiter" ? "/post-job" : "/profile" });
   };
 
@@ -64,8 +70,10 @@ function AuthPage() {
       <Navbar />
       <div className="mx-auto flex max-w-md flex-col px-4 py-12 sm:py-20">
         <div className="mb-8 text-center">
-          <h1 className="font-display text-3xl font-bold">Welcome to WarmHire</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Hire and get hired, the warm way.</p>
+          <h1 className="font-display text-3xl font-bold">Welcome to AI Hire Buddy</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            AI-assisted hiring for job seekers and recruiters.
+          </p>
         </div>
         <Card className="p-6 shadow-soft">
           <Tabs defaultValue="signin">
@@ -78,14 +86,26 @@ function AuthPage() {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
                   <Label htmlFor="si-email">Email</Label>
-                  <Input id="si-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <Input
+                    id="si-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="si-pw">Password</Label>
-                  <Input id="si-pw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  <Input
+                    id="si-pw"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
                 </div>
                 <Button type="submit" className="w-full shadow-warm" disabled={loading}>
-                  {loading ? "Signing in…" : "Sign in"}
+                  {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </form>
             </TabsContent>
@@ -93,13 +113,21 @@ function AuthPage() {
             <TabsContent value="signup" className="mt-6">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
-                  <Label>I am a…</Label>
-                  <RadioGroup value={role} onValueChange={(v) => setRole(v as typeof role)} className="mt-2 grid grid-cols-2 gap-2">
-                    <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm transition-colors ${role === "job_seeker" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <Label>I am a</Label>
+                  <RadioGroup
+                    value={role}
+                    onValueChange={(value) => setRole(value as typeof role)}
+                    className="mt-2 grid grid-cols-2 gap-2"
+                  >
+                    <label
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm transition-colors ${role === "job_seeker" ? "border-primary bg-primary/5" : "border-border"}`}
+                    >
                       <RadioGroupItem value="job_seeker" />
                       <UserSearch className="h-4 w-4" /> Job Seeker
                     </label>
-                    <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm transition-colors ${role === "recruiter" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <label
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm transition-colors ${role === "recruiter" ? "border-primary bg-primary/5" : "border-border"}`}
+                    >
                       <RadioGroupItem value="recruiter" />
                       <Briefcase className="h-4 w-4" /> Recruiter
                     </label>
@@ -107,18 +135,36 @@ function AuthPage() {
                 </div>
                 <div>
                   <Label htmlFor="su-name">Full name</Label>
-                  <Input id="su-name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                  <Input
+                    id="su-name"
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="su-email">Email</Label>
-                  <Input id="su-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <Input
+                    id="su-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="su-pw">Password</Label>
-                  <Input id="su-pw" type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  <Input
+                    id="su-pw"
+                    type="password"
+                    minLength={6}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
                 </div>
                 <Button type="submit" className="w-full shadow-warm" disabled={loading}>
-                  {loading ? "Creating…" : "Create account"}
+                  {loading ? "Creating..." : "Create account"}
                 </Button>
               </form>
             </TabsContent>

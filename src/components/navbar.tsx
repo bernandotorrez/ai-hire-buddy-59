@@ -20,7 +20,7 @@ export function Navbar() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-warm text-primary-foreground shadow-warm">
             <Briefcase className="h-5 w-5" />
           </span>
-          WarmHire
+          AI Hire Buddy
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

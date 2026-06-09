@@ -9,6 +9,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rolesLoading, setRolesLoading] = useState(false);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
@@ -26,16 +27,26 @@ export function useAuth() {
   useEffect(() => {
     if (!user) {
       setRoles([]);
+      setRolesLoading(false);
       return;
     }
+    setRolesLoading(true);
     supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
       .then(({ data }) => {
         setRoles((data ?? []).map((r) => r.role as AppRole));
+        setRolesLoading(false);
       });
   }, [user]);
 
-  return { session, user, roles, loading, isRecruiter: roles.includes("recruiter"), isSeeker: roles.includes("job_seeker") };
+  return {
+    session,
+    user,
+    roles,
+    loading: loading || rolesLoading,
+    isRecruiter: roles.includes("recruiter"),
+    isSeeker: roles.includes("job_seeker"),
+  };
 }
