@@ -9,11 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PostJobRouteImport } from './routes/post-job'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ApplicationsRouteImport } from './routes/applications'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostJobRoute = PostJobRouteImport.update({
+  id: '/post-job',
+  path: '/post-job',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JobsRoute = JobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
@@ -22,6 +35,11 @@ const JobsRoute = JobsRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplicationsRoute = ApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,39 +55,87 @@ const JobsIdRoute = JobsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/auth': typeof AuthRoute
   '/jobs': typeof JobsRouteWithChildren
+  '/post-job': typeof PostJobRoute
+  '/profile': typeof ProfileRoute
   '/jobs/$id': typeof JobsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/auth': typeof AuthRoute
   '/jobs': typeof JobsRouteWithChildren
+  '/post-job': typeof PostJobRoute
+  '/profile': typeof ProfileRoute
   '/jobs/$id': typeof JobsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/auth': typeof AuthRoute
   '/jobs': typeof JobsRouteWithChildren
+  '/post-job': typeof PostJobRoute
+  '/profile': typeof ProfileRoute
   '/jobs/$id': typeof JobsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/jobs' | '/jobs/$id'
+  fullPaths:
+    | '/'
+    | '/applications'
+    | '/auth'
+    | '/jobs'
+    | '/post-job'
+    | '/profile'
+    | '/jobs/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/jobs' | '/jobs/$id'
-  id: '__root__' | '/' | '/auth' | '/jobs' | '/jobs/$id'
+  to:
+    | '/'
+    | '/applications'
+    | '/auth'
+    | '/jobs'
+    | '/post-job'
+    | '/profile'
+    | '/jobs/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/applications'
+    | '/auth'
+    | '/jobs'
+    | '/post-job'
+    | '/profile'
+    | '/jobs/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApplicationsRoute: typeof ApplicationsRoute
   AuthRoute: typeof AuthRoute
   JobsRoute: typeof JobsRouteWithChildren
+  PostJobRoute: typeof PostJobRoute
+  ProfileRoute: typeof ProfileRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/post-job': {
+      id: '/post-job'
+      path: '/post-job'
+      fullPath: '/post-job'
+      preLoaderRoute: typeof PostJobRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jobs': {
       id: '/jobs'
       path: '/jobs'
@@ -82,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/applications': {
+      id: '/applications'
+      path: '/applications'
+      fullPath: '/applications'
+      preLoaderRoute: typeof ApplicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -113,8 +186,11 @@ const JobsRouteWithChildren = JobsRoute._addFileChildren(JobsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApplicationsRoute: ApplicationsRoute,
   AuthRoute: AuthRoute,
   JobsRoute: JobsRouteWithChildren,
+  PostJobRoute: PostJobRoute,
+  ProfileRoute: ProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
